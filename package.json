@@ -1,0 +1,27 @@
+{
+  "name": "chatroom",
+  "version": "1.0.0",
+  "description": "use socket.io to build a simple chatroom website.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yen-cheng/chatroom.git"
+  },
+  "keywords": [
+    "websocket",
+    "chatroom"
+  ],
+  "author": "Yencheng Liu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yen-cheng/chatroom/issues"
+  },
+  "homepage": "https://github.com/yen-cheng/chatroom#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.1.3"
+  }
+}
