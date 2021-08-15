@@ -14,8 +14,12 @@ app.use('/chat', chatRouter);
 
 io.on('connection', (socket) => {
     console.log('a user connected');
-    socket.emit('server to client', 'Hi, this message is from server');
+    let message = {
+        msg:'Hi, this message is from server',
+    }
+    socket.emit('server to client', JSON.stringify(message));
     socket.on('message from client', (msg) => {
+        console.log('id: ' + socket.id);
         console.log('message: ' + msg);
       });
     socket.on('disconnect', () => {

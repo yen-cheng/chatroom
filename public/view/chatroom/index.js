@@ -1,8 +1,14 @@
 const socket = io();
+console.log(socket);
 const sendMsg = () => {
     let message = document.getElementById("inputMsg").value;
+    let nickName = document.getElementById("nickname").value;
     if (message) {
-        socket.emit('message from client', message);
+        let msgObj = {
+            nickName,
+            message
+        }
+        socket.emit('message from client', JSON.stringify(msgObj));
         document.getElementById("inputMsg").value = '';
     }
 }
@@ -18,5 +24,5 @@ inputMsg.addEventListener("keyup", function(event) {
   });
 
 socket.on('server to client', (msg) => {
-    console.log(msg);
+    console.log(JSON.parse(msg));
 });
