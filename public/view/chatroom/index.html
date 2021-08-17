@@ -15,20 +15,23 @@
 <body>
     <div id="app">
         <div class="container">
-            <div class="row">
-                <div class="border border-success" style="height: 500px;" id="chat-content"></div>
+            <div class="overflow-auto border border-success p-2" style="height: 500px;" id="chat-content">
+                <div :class='{"flex-row-reverse" : msg.isMyself}' class="d-flex m-3" v-for='msg in historyMessage'>
+                    <div style='max-width: 50%; Border-radius: 15px' class='bg-info p-2'><span class=''>{{ msg.message }}</span></div>
+                </div>
             </div>
-        </div>
-        <div class="fixed-bottom">
-            <div class="input-group">
-                <span class="input-group-text btn btn-outline-success">Nick Name</span>
-                <input v-model='nickName' type="text" class="form-control" aria-label="type someting">
-            </div>
-            <div class="input-group">
-                <button type="button" class="input-group-text btn btn-outline-success">Leave</button>
-                <input v-model='message' @keydown.enter='sendMsg' type="text" class="form-control"
-                    aria-label="type someting">
-                <button @click="sendMsg" type="button" class="input-group-text btn btn-outline-success">Send</button>
+            <div class="fixed-bottom">
+                <div class="input-group">
+                    <span class="input-group-text btn btn-outline-success">Nick Name</span>
+                    <input v-model='nickName' type="text" class="form-control" aria-label="type someting">
+                </div>
+                <div class="input-group">
+                    <button type="button" class="input-group-text btn btn-outline-success">Leave</button>
+                    <input v-model='message' @keydown.enter='sendMsg' type="text" class="form-control"
+                        aria-label="type someting">
+                    <button @click="sendMsg" type="button"
+                        class="input-group-text btn btn-outline-success">Send</button>
+                </div>
             </div>
         </div>
     </div>
@@ -41,15 +44,21 @@
     Vue.createApp({
         data() {
             return {
+                socket: null,
+                socketId: null,
                 nickName: '',
                 message: 'vue3 is work',
-                socket: null
+                historyMessage: [],
             }
         },
         mounted() {
             this.socket = io();
-            this.socket.on('server to client', (msg) => {
-                console.log(JSON.parse(msg));
+            this.socketId = this.socket.id;
+            this.socket.on('new message', (content) => {
+                content = JSON.parse(content);
+                content.isMyself = false;
+                this.historyMessage.push(content);
+                // console.log(this.historyMessage);
             });
         },
         methods: {
@@ -57,9 +66,11 @@
                 if (this.message) {
                     let msgObj = {
                         nickName: this.nickName,
-                        message: this.message
+                        message: this.message,
+                        isMyself: true
                     }
-                    this.socket.emit('message from client', JSON.stringify(msgObj));
+                    this.historyMessage.push(msgObj);
+                    this.socket.emit('new message', JSON.stringify(msgObj));
                     this.message = '';
                 }
             }
